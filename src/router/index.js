@@ -22,20 +22,23 @@ const originalReplace = VueRouter.prototype.replace;
 //call||apply的区别
 //相同点：都可以调用函数一次，都可以篡改函数的上下文一次
 //不同点：call与apply传递参数：call传递参数用逗号隔开，apply方法执行，传递数组
+
+
+//location:路由跳转相关的信息
 VueRouter.prototype.push = function (location, resolve, reject) {
     if (resolve && reject) {
-        originalPush.call(this, resolve, reject);
+        originalPush.call(this, location, resolve, reject);
     } else {
-        originalPush.call(this, () => { }, () => { });
+        originalPush.call(this, location, () => { }, () => { });
     }
 }
 
 
 VueRouter.prototype.replace = function (location, resolve, reject) {
     if (resolve && reject) {
-        originalReplace.call(this, resolve, reject);
+        originalReplace.call(this, location, resolve, reject);
     } else {
-        originalReplace.call(this, () => { }, () => { });
+        originalReplace.call(this, location, () => { }, () => { });
     }
 }
 
@@ -70,7 +73,7 @@ export default new VueRouter({
         },
         {
             name: 'Search',
-            path: '/search/:keyWord',
+            path: '/search/:keyWord', //     /search/:keyWord
             component: Search,
             meta: { showFooter: true }
         },

@@ -3,10 +3,12 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-const actions = {};
-
-const mutations = {};
-
-const state = {};
-
-const getters = {};
+import home from './home/index'  
+import search from './search/index'  
+export default new Vuex.Store({
+    
+    modules:{
+        home,
+        search
+    }
+})
