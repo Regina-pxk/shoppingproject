@@ -62,17 +62,16 @@ export default {
   },
   methods: {
     goSearch() {
-      if (this.keyWord) {
-        this.$router.push({
-          name: "Search",
-          params: {
-            keyWord: "" || undefined,
-          },
-          query: {
-            k: this.keyWord.toUpperCase(),
-          },
-        });
+      var location = {
+        name: "Search",
+        params: {
+          keyWord: this.keyWord || undefined,
+        },
+      };
+      if (this.$route.query) {
+        location.query = this.$route.query;
       }
+      this.$router.push(location);
     },
   },
 };
