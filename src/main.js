@@ -6,9 +6,9 @@ import TypeNav from '@/components/TypeNav'
 import store from './store'
 
 //引入MockServe.js----mock数据
-import '@/mock/mockServe'
-
-
+import '@/mock/mockServe';
+//引入轮播图样式
+import 'swiper/css/swiper.css';
 Vue.config.productionTip = false
 Vue.component(TypeNav.name, TypeNav)
 new Vue({

@@ -1,11 +1,12 @@
-import { reqCategoryList, reqGetBannerList } from "@/api";
+import { reqCategoryList, reqGetBannerList, reqGetFloorList } from "@/api";
 //home模块对应的仓库
 const state = {
     //home仓库存储的三级菜单工具
     categoryList: [],
     //轮播图的数据
-    bannerList:[]
-
+    bannerList:[],
+    //floor组件数据
+    floorList:[]
 };
 
 const actions = {
@@ -17,9 +18,16 @@ const actions = {
     },
     //获取首页轮播图数据
     async getBannerList(context) {
-        var result = await reqGetBannerList();
+        var result = await reqGetFloorList();
         if (result.code == 200) {
             context.commit("GETBANNERLIST", result.data)
+        }
+    },
+    //获取首页轮播图数据
+    async getFloorList(context) {
+        var result = await reqGetBannerList();
+        if (result.code == 200) {
+            context.commit("GETFLOORLIST", result.data)
         }
     }
 };
@@ -30,6 +38,9 @@ const mutations = {
     },
     GETBANNERLIST(state, value){
         state.bannerList = value;
+    },
+    GETFLOORLIST(state, value){
+        state.floorList = value;
     }
 };
 
