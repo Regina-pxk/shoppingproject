@@ -12,3 +12,10 @@ export const reqGetBannerList = ()=> mockrequests.get('/banner');
 
 //获取floor数据
 export const reqGetFloorList=()=>mockrequests.get('/floor');
+
+//获取搜索模块接口
+export const reqGetSearchInfo = (params)=>requests({
+    url:'/list',
+    method:'post',
+    data:params
+});

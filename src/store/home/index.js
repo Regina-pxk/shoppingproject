@@ -18,14 +18,14 @@ const actions = {
     },
     //获取首页轮播图数据
     async getBannerList(context) {
-        var result = await reqGetFloorList();
+        var result = await reqGetBannerList();
         if (result.code == 200) {
             context.commit("GETBANNERLIST", result.data)
         }
     },
     //获取首页轮播图数据
     async getFloorList(context) {
-        var result = await reqGetBannerList();
+        var result = await reqGetFloorList();
         if (result.code == 200) {
             context.commit("GETFLOORLIST", result.data)
         }
