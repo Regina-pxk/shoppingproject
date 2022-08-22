@@ -11,15 +11,20 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <!-- <li class="with-x">手机</li> -->
+            <!-- 分类的面包屑 -->
+            <li class="with-x" v-show="searchParams.categoryName">{{searchParams.categoryName}}<i @click="removeCategoryName">×</i></li>
+            <!-- 关键字的面包屑 -->
+            <li class="with-x" v-show="searchParams.keyword">{{searchParams.keyword}}<i @click="removeKeyWord">×</i></li>
+            <!-- 品牌的面包屑 -->
+            <li class="with-x" v-show="searchParams.trademark">{{searchParams.trademark.split(":")[1]}}<i @click="removeTrademark">×</i></li>
+            <!-- <li class="with-x">华为<i>×</i></li>
+            <li class="with-x">OPPO<i>×</i></li> -->
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector @trademarkInfo = "trademarkInfo"/>
 
         <!--details-->
         <div class="details clearfix">
@@ -495,20 +500,69 @@ export default {
       //对象写法
       {
         goodsList: "search/goodsList",
-        trademarkList: "search/trademarkList",
-        attrsList: "search/attrsList",
       }
     ),
   },
-  beforeMount() {
-    //第一种合并参数的方法
-    // this.searchParams = { ...this.searchParams, ...this.$route.query };
-    // this.searchParams = { ...this.searchParams, ...this.$route.params };
-    //第二种
-    this.searchParams = Object.assign(this.searchParams,this.$route.query,this.$route.params )
+  methods: {
+    getData() {
+      //第一种合并参数的方法
+      // this.searchParams = { ...this.searchParams, ...this.$route.query };
+      // this.searchParams = { ...this.searchParams, ...this.$route.params };
+      //第二种
+      this.searchParams = Object.assign(
+        this.searchParams,
+        this.$route.query,
+        this.$route.params
+      );
+      this.$store.dispatch("search/getSearchList", this.searchParams);
+    },
+    
+    //删除分类名称
+    removeCategoryName(){
+      this.searchParams.categoryName = undefined;
+      this.searchParams.category1Id = undefined;
+      this.searchParams.category2Id = undefined;
+      this.searchParams.category3Id = undefined;
+      this.$store.dispatch("search/getSearchList", this.searchParams);
+      //修改路由地址，进行路由跳转
+      if(this.$route.params){
+        this.$router.push({name:'Search',params:this.$route.params});
+      }
+    },
+    //删除关键字
+    removeKeyWord(){
+      this.searchParams.keyword = undefined;
+      this.$store.dispatch("search/getSearchList", this.searchParams);
+      //修改路由地址，进行路由跳转
+      if(this.$route.query){
+        this.$router.push({name:'Search',query:this.$route.query});
+        //通知Header组件清除关键字
+        this.$bus.$emit("clear");
+      }
+    },
+    //删除品牌信息
+    removeTrademark(){
+      this.searchParams.trademark = "";
+      this.$store.dispatch("search/getSearchList", this.searchParams);
+    },
+    //自定义事件回调
+    trademarkInfo(trademark){
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
+      this.getData();
+    }
   },
   mounted() {
-    this.$store.dispatch("search/getSearchList", this.searchParams);
+    this.getData();
+  },
+  //数据监听，监听组件实例身上的属性的属性值的变化
+  watch: {
+    $route(newValue, oldValue) {
+      // immediate:true,
+      this.getData();
+      this.searchParams.category1Id = undefined;
+      this.searchParams.category2Id = undefined;
+      this.searchParams.category3Id = undefined;
+    },
   },
 };
 </script>
