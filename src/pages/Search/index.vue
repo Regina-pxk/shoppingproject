@@ -13,24 +13,37 @@
           <ul class="fl sui-tag">
             <!-- <li class="with-x">手机</li> -->
             <!-- 分类的面包屑 -->
-            <li class="with-x" v-show="searchParams.categoryName">{{searchParams.categoryName}}<i @click="removeCategoryName">×</i></li>
+            <li class="with-x" v-show="searchParams.categoryName">
+              {{ searchParams.categoryName
+              }}<i @click="removeCategoryName">×</i>
+            </li>
             <!-- 关键字的面包屑 -->
-            <li class="with-x" v-show="searchParams.keyword">{{searchParams.keyword}}<i @click="removeKeyWord">×</i></li>
+            <li class="with-x" v-show="searchParams.keyword">
+              {{ searchParams.keyword }}<i @click="removeKeyWord">×</i>
+            </li>
             <!-- 品牌的面包屑 -->
-            <li class="with-x" v-show="searchParams.trademark">{{searchParams.trademark.split(":")[1]}}<i @click="removeTrademark">×</i></li>
+            <li class="with-x" v-show="searchParams.trademark">
+              {{ searchParams.trademark.split(":")[1]
+              }}<i @click="removeTrademark">×</i>
+            </li>
+            <!-- 平台属性的面包屑 -->
+            <li class="with-x" v-for="(attr,index) in searchParams.props" :key="index">
+              {{ attr.split(":")[1]
+              }}<i @click="removeAttr(index)">×</i>
+            </li>
             <!-- <li class="with-x">华为<i>×</i></li>
             <li class="with-x">OPPO<i>×</i></li> -->
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector @trademarkInfo = "trademarkInfo"/>
+        <SearchSelector @trademarkInfo="trademarkInfo" @attrInfo="attrInfo" />
 
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
-              <!-- 价格结构 -->
+              <!-- 排序结构 -->
               <ul class="sui-nav">
                 <li class="active">
                   <a href="#">综合</a>
@@ -479,8 +492,8 @@ export default {
         categoryName: "",
         //搜索关键字
         keyword: "",
-        //排序
-        order: "",
+        //排序  初始状态：综合|降序 1：desc
+        order: "1:desc",
         //当前页
         pageNo: 1,
         //每页条数
@@ -516,40 +529,52 @@ export default {
       );
       this.$store.dispatch("search/getSearchList", this.searchParams);
     },
-    
     //删除分类名称
-    removeCategoryName(){
+    removeCategoryName() {
       this.searchParams.categoryName = undefined;
       this.searchParams.category1Id = undefined;
       this.searchParams.category2Id = undefined;
       this.searchParams.category3Id = undefined;
       this.$store.dispatch("search/getSearchList", this.searchParams);
       //修改路由地址，进行路由跳转
-      if(this.$route.params){
-        this.$router.push({name:'Search',params:this.$route.params});
+      if (this.$route.params) {
+        this.$router.push({ name: "Search", params: this.$route.params });
       }
     },
     //删除关键字
-    removeKeyWord(){
+    removeKeyWord() {
       this.searchParams.keyword = undefined;
       this.$store.dispatch("search/getSearchList", this.searchParams);
       //修改路由地址，进行路由跳转
-      if(this.$route.query){
-        this.$router.push({name:'Search',query:this.$route.query});
+      if (this.$route.query) {
+        this.$router.push({ name: "Search", query: this.$route.query });
         //通知Header组件清除关键字
         this.$bus.$emit("clear");
       }
     },
     //删除品牌信息
-    removeTrademark(){
+    removeTrademark() {
       this.searchParams.trademark = "";
       this.$store.dispatch("search/getSearchList", this.searchParams);
     },
+    //删除平台售卖属性
+    removeAttr(index){
+      this.searchParams.props.splice(index,1);
+      this.getData();
+    },
     //自定义事件回调
-    trademarkInfo(trademark){
+    trademarkInfo(trademark) {
       this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
       this.getData();
-    }
+    },
+    //收集平台属性的回调函数
+    attrInfo(attr, attrValue) {
+      let props = `${attr.attrId}:${attrValue}:${attr.attrName}`;
+      if(this.searchParams.props.indexOf(props)==-1){
+        this.searchParams.props.push(props);
+      }
+      this.getData();
+    },
   },
   mounted() {
     this.getData();

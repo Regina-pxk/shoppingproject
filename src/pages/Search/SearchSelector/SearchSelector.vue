@@ -3,6 +3,7 @@
     <div class="type-wrap logo">
       <div class="fl key brand">品牌</div>
       <div class="value logos">
+        <!-- 品牌地方 -->
         <ul class="logo-list">
           <li v-for="trademark in trademarkList" :key="trademark.tmId" @click="trademarHandler(trademark)">
             {{ trademark.tmName }}
@@ -31,11 +32,12 @@
         <a href="javascript:void(0);">更多</a>
       </div>
     </div>
+    <!-- 平台售卖属性 -->
     <div class="type-wrap" v-for="(attrs) in attrsList" :key="attrs.attrId">
       <div class="fl key">{{attrs.attrName}}</div>
       <div class="fl value">
         <ul class="type-list">
-          <li v-for="(attrValue, index) in attrs.attrValueList" :key="index">
+          <li v-for="(attrValue, index) in attrs.attrValueList" :key="index" @click="attrInfo(attrs,attrValue)">
             <a>{{attrValue}}</a>
           </li>
           <!-- <li>
@@ -171,7 +173,11 @@ export default {
   methods: {
     trademarHandler(trademark){
       this.$emit('trademarkInfo',trademark);
-    }
+    },
+    attrInfo(attr,attrValue){
+      // ["属性ID:属性值:属性名"]
+      this.$emit("attrInfo",attr,attrValue);
+    },
   },
 };
 </script>
